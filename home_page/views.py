@@ -2,10 +2,28 @@ from django.contrib.auth import authenticate, login as user_login, logout as use
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.models import User
-# Create your views here.
+from django.views.generic import TemplateView, View
 
-def login_views(request):
-    if request.method == "POST":
+
+
+def logout_views(request):
+    user_logout(request)
+    return HttpResponseRedirect("/")
+
+
+class HomeView(View):
+    template_name = 'home.html'
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+class LoginView(View):
+    template_name = 'login.html'
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+    def post(self, request):
         login = request.POST.get("login")
         password = request.POST.get("password")
         user = authenticate(request, username=login, password=password, )
@@ -14,10 +32,15 @@ def login_views(request):
             return HttpResponseRedirect("/home")
         else:
             return render(request, "login.html")
-    return render(request, 'login.html')
 
-def registration_views(request):
-    if request.method == "POST":
+
+class RegistrationView(View):
+    template_name = 'registration.html'
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+    def post(self, request):
         login = request.POST.get("login")
         password = request.POST.get("password")
         password2 = request.POST.get("password2")
@@ -29,11 +52,9 @@ def registration_views(request):
                 return HttpResponseRedirect("/home")
             else:
                 return render(request, "login.html")
-    return render(request, 'registration.html')
 
-def logout_views(request):
-    user_logout(request)
-    return HttpResponseRedirect("/")
 
-def home_views(request):
-    return render(request, 'home.html')
+class AccountView(View):
+    template_name = 'account.html'
+    def get(self, request):
+        return render(request, self.template_name)

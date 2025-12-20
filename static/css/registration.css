@@ -72,3 +72,18 @@ button {
 button:hover {
     background-color: #f7d098;
 }
+
+a:link, a:visited{
+    background-color: #fcf0c8;
+    color: #911f27;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    width: 50%;
+}
+
+a:hover {
+    color: #911f27;
+    text-decoration: none;
+}
