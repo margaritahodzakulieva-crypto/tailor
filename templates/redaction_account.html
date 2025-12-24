@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/redaction_account.css' %}">
+    <title>redaction account</title>
+</head>
+<body>
+    <div class="edit-container">
+        <div class="edit-card">
+
+            <div class="logo">
+                <img src="{% static 'images/logo05.png' %}" alt="Logo">
+            </div>
+
+            <h1>Edit profile</h1>
+
+            <div class="avatar-section">
+                <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}"
+                     alt="Avatar" class="current-avatar">
+                <p class="username-display">{{ user.username }}</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="edit-form">
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <span class="error">{{ form.username.errors }}</span>
+                    {% endif %}
+                </div>
+                <div class="input-group">
+                    <label for="{{ form.email.id_for_label }}">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <span class="error">{{ form.email.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="input-group">
+                    <label for="{{ form.first_name.id_for_label }}">Name</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <span class="error">{{ form.first_name.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="input-group">
+                    <label for="{{ form.last_name.id_for_label }}">Surname</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <span class="error">{{ form.last_name.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="input-group">
+                    <label class="file-label" for="{{ form.image.id_for_label }}">
+                        Change profile picture
+                    </label>
+                    {{ form.image }}
+                    {% if form.image.errors %}
+                        <span class="error">{{ form.image.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="input-group">
+                    <label for="{{ form.about.id_for_label }}">About</label>
+                    {{ form.about }}
+                    {% if form.about.errors %}
+                        <span class="error">{{ form.about.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">Save changes</button>
+                    <a href="{% url 'account' %}" class="btn-secondary">Back to profile</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

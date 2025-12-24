@@ -49,6 +49,31 @@
     </header>
 
     <main>
+        <div class="profile-container">
+            <div class="user-posts">
+                {% if user_posts %}
+                    <div class="posts-grid">
+                        {% for post in user_posts %}
+                            <div class="post-card">
+                                {% if post.post_image %}
+                                    <img src="{{ post.post_image.url }}" alt="{{ post.post_title }}" class="post-image">
+                                {% else %}
+                                    <div class="post-no-image">No image</div>
+                                {% endif %}
+
+                                <div class="post-content">
+                                    <h3>{{ post.post_title }}</h3>
+                                    <p>{{ post.post_description|truncatewords:20 }}</p>
+                                    <a href="{{ post.get_absolute_url }}">Read more →</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p style="text-align: center; color: #888; font-style: italic;">No posts yet</p>
+                {% endif %}
+            </div>
+        </div>
     </main>
 </body>
 </html>

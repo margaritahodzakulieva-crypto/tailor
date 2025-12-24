@@ -11,10 +11,13 @@
 html, body {
     height: 100%;
     background-color: #F3E8DF;
-    background-image: url('{% static "images/login-bg.jpg" %}');
+    color: #452829;
+}
+
+body {
     background-size: cover;
     background-position: center;
-    color: #452829;
+    background-repeat: no-repeat;
 }
 
 .container {
@@ -57,7 +60,6 @@ form {
 
 .input-block {
     margin-bottom: 20px;
-    position: relative;
     text-align: left;
 }
 
@@ -65,11 +67,12 @@ form {
     display: block;
     margin-bottom: 8px;
     font-size: 18px;
+    color: #452829;
 }
 
 .input-block input {
     width: 100%;
-    padding: 12px 12px 12px 45px;
+    padding: 12px 15px;
     font-size: 18px;
     border: 2px solid #452829;
     border-radius: 10px;
@@ -83,16 +86,11 @@ form {
     box-shadow: 0 0 20px rgba(247, 208, 152, 0.8);
 }
 
-.input-block::before {
-    content: '';
-    position: absolute;
-    left: 15px;
-    top: 42px;
-    width: 20px;
-    height: 20px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.6;
+.error-message, .error {
+    color: #911f27;
+    font-size: 16px;
+    margin-top: 10px;
+    text-align: center;
 }
 
 .button-block {
@@ -111,9 +109,11 @@ button, .btn {
     transition: all 0.3s;
     text-decoration: none;
     display: block;
+    text-align: center;
 }
 
 button:hover, .btn:hover {
     background-color: #E8D1C5;
     transform: translateY(-2px);
 }
+

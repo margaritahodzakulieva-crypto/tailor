@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from home_page.views import logout_views, HomeView, LoginView, RegistrationView, AccountView
+from home_page.views import logout_views, HomeView, LoginView, RegistrationView, AccountView, RedactionAccountView
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('registration/', RegistrationView.as_view(), name='registration'),
     path('home/',HomeView.as_view(), name='home'),
     path('account/', AccountView.as_view(), name='account'),
+    path('redaction/', RedactionAccountView.as_view(), name='redaction'),
 ]
 
 if settings.DEBUG:

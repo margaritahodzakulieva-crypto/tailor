@@ -1,9 +1,12 @@
 from django.contrib.auth import authenticate, login as user_login, logout as user_logout
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
-from django.views.generic import TemplateView, View
-
+from django.views.generic import View
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib import messages
+from .forms import PostForm, UserProfileForm
+from .models import Post
 
 
 def logout_views(request):
@@ -14,49 +17,69 @@ def logout_views(request):
 class HomeView(View):
     template_name = 'home.html'
     def get(self, request):
-        return render(request, self.template_name)
+        posts = Post.objects.all()
+        return render(request, self.template_name, context={
+            'user_posts': posts
+        })
 
 
 class LoginView(View):
     template_name = 'login.html'
     def get(self, request):
-        return render(request, self.template_name)
+        form = AuthenticationForm()
+        return render(request, self.template_name, {'form': form})
 
 
     def post(self, request):
-        login = request.POST.get("username")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        user = authenticate(request, username=login, email=email, password=password, )
-        if user is not None:
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
             user_login(request, user)
-            return HttpResponseRedirect("/home")
+            messages.success(request, 'Welcome!')
+            return redirect('/home')
         else:
-            return render(request, "login.html")
+            messages.error(request, 'Invalid login or password')
+            return render(request, self.template_name, {'form': form})
 
 
 class RegistrationView(View):
     template_name = 'registration.html'
     def get(self, request):
-        return render(request, self.template_name)
+        form = UserCreationForm()
+        return render(request, self.template_name, {'form': form})
 
 
     def post(self, request):
-        login = request.POST.get("login")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        password2 = request.POST.get("conference-password")
-        if password == password2:
-            User.objects.create_user(username=login, email=email, password=password)
-            user = authenticate(request, username=login,email=email, password=password)
-            if user is not None:
-                user_login(request, user)
-                return HttpResponseRedirect("/home")
-            else:
-                return render(request, "login.html")
+        form = UserCreationForm(data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            user_login(request, user)
+            messages.success(request, 'Registration successful! Welcome!')
+            return redirect('/home')
+        else:
+            messages.error(request, 'Registration failed!')
+            return render(request, self.template_name, {'form': form})
 
 
 class AccountView(View):
     template_name = 'account.html'
     def get(self, request):
-        return render(request, self.template_name)
+        profile = request.user.profile
+        posts = Post.objects.filter(user=request.user).order_by('-date_posted')
+        return render(request, self.template_name, context={
+            'profile': profile,
+            'user_posts': posts
+        })
+
+class RedactionAccountView(View):
+    template_name = 'redaction_account.html'
+    def get(self, request):
+        form = UserProfileForm(instance=request.user.profile)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            return redirect('account')
+        return render(request, self.template_name, {'form': form})

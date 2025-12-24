@@ -3,42 +3,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/registration.css' %}">
-    <title>registration</title>
+    <title>Registration</title>
 </head>
 <body>
-     <div class="container">
-         <div class="form-container">
-             <div class="logo">
-                 <img src="{% static 'images/logo05.png' %}" alt="logo">
-             </div>
-             <h1>Registration</h1>
-             <form method="POST">
-                 {% csrf_token %}
-                 <div class="input-block">
-                     <label for="username">Username</label>
-                     <input type="text" name="username" id="username" placeholder="Enter your username">
-                 </div>
-                 <div class="input-block">
-                     <label for="email">Email</label>
-                     <input type="email" name="email" id="email" placeholder="Enter your email">
-                 </div>
-                 <div class="input-block">
-                     <label for="password">Password</label>
-                     <input type="password" name="password" id="password" placeholder="Enter your password">
-                 </div>
-                 <div class="input-block">
-                     <label for="confirm-password">Confirm Password</label>
-                     <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm your password">
-                 </div>
-                 <div class="button-block">
-                     <button type="submit">Register</button>
-                 </div>
-                 <div class="button-block">
-                     <a href="/" class="btn">Login</a>
-                 </div>
-             </form>
-         </div>
-     </div>
+    <div class="container">
+        <div class="form-container">
+            <div class="logo">
+                <img src="{% static 'images/logo05.png' %}" alt="Logo">
+            </div>
+
+            <h1>Registration</h1>
+
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="input-block">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <span class="error">{{ form.username.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="input-block">
+                    <label for="{{ form.password1.id_for_label }}">Password</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                        <span class="error">{{ form.password1.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="input-block">
+                    <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <span class="error">{{ form.password2.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="button-block">
+                    <button type="submit">Registration</button>
+                </div>
+
+                <div class="button-block">
+                    <a href="/" class="btn">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

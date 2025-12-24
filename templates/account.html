@@ -30,23 +30,64 @@
                     <li><a href="/add">Add</a></li>
                     <li><a href="/notice">Notice</a></li>
                 </ul>
-
-<!--                <div class="account-item">-->
-<!--                    {% if user.is_authenticated %}-->
-<!--                        <a href="/account" class="account-link">-->
-<!--                            {% if user.profile.image %}-->
-<!--                                <img src="{{ user.profile.image.url }}" alt="Avatar" class="account-avatar">-->
-<!--                            {% else %}-->
-<!--                                <img src="{% static 'images/avatar.png' %}" alt="Default Avatar" class="account-avatar">-->
-<!--                            {% endif %}-->
-<!--                        </a>-->
-                    {% endif %}
-                </div>
             </nav>
         </div>
     </header>
 
-    <main>
+    <main class="profile-page">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="account-avatar-block">
+                    {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" alt="Avatar" class="account-avatar">
+                    {% else %}
+                        <img src="{% static 'images/avatar.png' %}" alt="Default Avatar" class="account-avatar">
+                    {% endif %}
+                </div>
+
+                <div class="about-section">
+                    <h1>{{ user.username }}</h1>
+                    <div class="about-text">
+                        {% if user.profile.about %}
+                            {{ user.profile.about|linebreaks }}
+                        {% else %}
+                            <p style="color: #888; font-style: italic;">Nothing stated about yourself</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="button-block">
+                    <a href="/redaction" class="btn-edit">Edit profile</a>
+                </div>
+            </div>
+
+
+            <div class="user-posts">
+                <h2>My posts</h2>
+
+                {% if user_posts %}
+                    <div class="posts-grid">
+                        {% for post in user_posts %}
+                            <div class="post-card">
+                                {% if post.post_image %}
+                                    <img src="{{ post.post_image.url }}" alt="{{ post.post_title }}" class="post-image">
+                                {% else %}
+                                    <div class="post-no-image">No image</div>
+                                {% endif %}
+
+                                <div class="post-content">
+                                    <h3>{{ post.post_title }}</h3>
+                                    <p>{{ post.post_description|truncatewords:20 }}</p>
+                                    <a href="{{ post.get_absolute_url }}">Read more →</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p style="text-align: center; color: #888; font-style: italic;">No posts yet</p>
+                {% endif %}
+            </div>
+        </div>
     </main>
 </body>
 </html>

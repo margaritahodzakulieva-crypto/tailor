@@ -3,40 +3,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <title>login</title>
+    <title>Login</title>
 </head>
 <body>
-     <div class="container">
-         <div class="form-container">
-             <div class="logo">
-                 <img src="{% static 'images/logo05.png' %}" alt="logo">
-             </div>
-             <h1>Welcome back!</h1>
+    <div class="container">
+        <div class="form-container">
+            <div class="logo">
+                <img src="{% static 'images/logo05.png' %}" alt="Logo">
+            </div>
 
-             <form method="POST">
-                 {% csrf_token %}
-                 <div class="input-block">
-                     <label for="username">Username</label>
-                     <input type="text" name="username" id="username" placeholder="Your username">
-                 </div>
-                 <div class="input-block">
-                     <label for="email">Email</label>
-                     <input type="email" name="email" id="email" placeholder="Your email">
-                 </div>
-                 <div class="input-block">
-                     <label for="password">Password</label>
-                     <input type="password" name="password" id="password" placeholder="Your password">
-                 </div>
-                 <div class="button-block">
-                     <button type="submit">Sign In</button>
-                 </div>
+            <h1>Welcome back!</h1>
 
-                 <div class="button-block">
-                     <a href="/registration" class="btn">Create Account</a>
-                 </div>
-             </form>
-         </div>
-     </div>
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="input-block">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <span class="error">{{ form.username.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="input-block">
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <span class="error">{{ form.password.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="button-block">
+                    <button type="submit">Sign In</button>
+                </div>
+
+                <div class="button-block">
+                    <a href="/registration" class="btn">Create Account</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
