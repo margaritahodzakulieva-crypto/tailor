@@ -7,41 +7,36 @@
     <title>login</title>
 </head>
 <body>
-    <div class="container">
-        <div class="filler"></div>
+     <div class="container">
+         <div class="form-container">
+             <div class="logo">
+                 <img src="{% static 'images/logo05.png' %}" alt="logo">
+             </div>
+             <h1>Welcome back!</h1>
 
-        <div class="form-container">
-            <form method="POST">
+             <form method="POST">
+                 {% csrf_token %}
+                 <div class="input-block">
+                     <label for="username">Username</label>
+                     <input type="text" name="username" id="username" placeholder="Your username">
+                 </div>
+                 <div class="input-block">
+                     <label for="email">Email</label>
+                     <input type="email" name="email" id="email" placeholder="Your email">
+                 </div>
+                 <div class="input-block">
+                     <label for="password">Password</label>
+                     <input type="password" name="password" id="password" placeholder="Your password">
+                 </div>
+                 <div class="button-block">
+                     <button type="submit">Sign In</button>
+                 </div>
 
-                <div class="input-block">
-                    <label for="login">Login</label>
-                    <input type="text" name="login" id="login">
-                </div>
-
-                <div class="input-block">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email">
-                </div>
-
-                <div class="input-block">
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password">
-                </div>
-
-                {% csrf_token %}
-
-                <div class="button-block">
-                    <button>Sign in</button>
-                </div>
-                <div class="button-block">
-                   <a href='/registration' class="btn">Registration</a>
-                </div>
-
-
-            </form>
-        </div>
-
-        <div class="filler"></div>
-    </div>
+                 <div class="button-block">
+                     <a href="/registration" class="btn">Create Account</a>
+                 </div>
+             </form>
+         </div>
+     </div>
 </body>
 </html>

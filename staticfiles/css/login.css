@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+* {
+  font-family: "PT Serif", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+html, body {
+    background-color: #fcf0c8;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+
+    display: grid;
+    grid-template-columns: 35vw 30vw 35vw;
+
+}
+
+form {
+    color: #911f27;
+    font-size: 40px;
+    margin-top: 55%;
+}
+
+.input-block {
+    margin-bottom: 1rem;
+}
+
+.input-block > label, .input-block > input {
+    width: 100%;
+}
+
+input {
+    font-size: 25px
+    outline: none;
+    border: 1px solid #911f27;
+    border-radius: 5px;
+    padding: 0.2rem 0.5rem;
+    background-color: #fcf0c8;
+    color: #630a10;
+    font-weight: 600;
+}
+
+.button-block {
+    text-align: center;
+}
+
+input:focus {
+    -webkit-box-shadow: 0px 0px 50px 15px rgba(247, 208, 152, 1);
+    -moz-box-shadow: 0px 0px 50px 15px rgba(247, 208, 152, 1);
+    box-shadow: 0px 0px 50px 15px rgba(247, 208, 152, 1);
+}
+
+button {
+    font-size: 25px
+    outline: none;
+    border: 1px solid #911f27;
+    border-radius: 5px;
+    padding: 0.2rem 0.5rem;
+    background-color: #fcf0c8;
+    color: #911f27;
+    font-weight: 600;
+    cursor: pointer;
+    width: 50%;
+}
+
+button:hover {
+    background-color: #f7d098;
+}
+
+a:link, a:visited{
+    background-color: #fcf0c8;
+    color: #911f27;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    width: 50%;
+}
+
+a:hover {
+    color: #911f27;
+    text-decoration: none;
+}

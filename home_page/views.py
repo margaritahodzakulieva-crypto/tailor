@@ -24,9 +24,10 @@ class LoginView(View):
 
 
     def post(self, request):
-        login = request.POST.get("login")
+        login = request.POST.get("username")
+        email = request.POST.get("email")
         password = request.POST.get("password")
-        user = authenticate(request, username=login, password=password, )
+        user = authenticate(request, username=login, email=email, password=password, )
         if user is not None:
             user_login(request, user)
             return HttpResponseRedirect("/home")
@@ -42,11 +43,12 @@ class RegistrationView(View):
 
     def post(self, request):
         login = request.POST.get("login")
+        email = request.POST.get("email")
         password = request.POST.get("password")
-        password2 = request.POST.get("password2")
+        password2 = request.POST.get("conference-password")
         if password == password2:
-            User.objects.create_user(username=login, password=password)
-            user = authenticate(request, username=login, password=password)
+            User.objects.create_user(username=login, email=email, password=password)
+            user = authenticate(request, username=login,email=email, password=password)
             if user is not None:
                 user_login(request, user)
                 return HttpResponseRedirect("/home")
