@@ -282,3 +282,8 @@ main .container {
 
 .pin-info-bottom p.pin
 
+.search-bar input[type="text"] {
+    padding-left: 40px;
+    background: url('../images/search-icon.png') no-repeat 10px center;
+    background-size: 20px 20px;
+}

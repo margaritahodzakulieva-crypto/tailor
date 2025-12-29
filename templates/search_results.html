@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <title>Home</title>
+    <title>Search{% if query %} — "{{ query }}"{% endif %}</title>
 </head>
 <body>
     <header>
@@ -23,7 +23,7 @@
                     <button type="submit">
                         <span class="search-icon"></span>
                     </button>
-                    </form>
+                </form>
             </div>
 
             <nav class="nav-menu">
@@ -50,9 +50,17 @@
 
     <main>
         <div class="container">
-            <div class="posts-grid">
-                {% if user_posts %}
-                    {% for post in user_posts %}
+            <h2 class="search-title">
+                {% if query %}
+                     Search results: <strong>"{{ query }}"</strong>
+                {% else %}
+                    Enter a search term
+                {% endif %}
+            </h2>
+
+            {% if posts %}
+                <div class="posts-grid">
+                    {% for post in posts %}
                         <div class="pin-card">
                             <a href="{% url 'post_detail' post.pk %}" class="pin-link">
                                 {% if post.post_image %}
@@ -66,8 +74,8 @@
                                 <div class="pin-overlay">
                                     <div class="pin-actions">
                                         {% if post.attachment %}
-                                            <a href="{{ post.post_file.url }}" class="download-btn" download>
-                                                Скачать
+                                            <a href="{{ post.attachment.url }}" class="download-btn" download>
+                                                Download
                                             </a>
                                         {% endif %}
                                     </div>
@@ -80,10 +88,14 @@
                             </a>
                         </div>
                     {% endfor %}
+                </div>
+            {% else %}
+                {% if query %}
+                    <p class="no-posts">Nothing found for your request"{{ query }}"</p>
                 {% else %}
-                    <p class="no-posts">No posts</p>
+                    <p class="no-posts">Enter your request in the field above</p>
                 {% endif %}
-            </div>
+            {% endif %}
         </div>
     </main>
 </body>

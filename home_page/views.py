@@ -7,6 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib import messages
 from .forms import PostForm, UserProfileForm
 from .models import Post
+from django.db.models import Q
 
 
 def logout_views(request):
@@ -115,3 +116,19 @@ class AddPostView(View):
             'profile': request.user.profile if request.user.is_authenticated else None,
         })
 
+def search_results(request):
+    query = request.GET.get('q', '').strip()
+    posts = []
+
+    if query:
+        posts = Post.objects.filter(
+            Q(post_title__icontains=query) |
+            Q(post_description__icontains=query) |  # если есть описание
+            Q(user__username__icontains=query)
+        ).distinct()
+
+    context = {
+       'query': query,
+        'posts': posts,
+    }
+    return render(request, 'search_results.html', context)
