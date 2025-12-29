@@ -49,28 +49,39 @@
     </header>
 
     <main>
-        <div class="profile-container">
-            <div class="user-posts">
+        <div class="container">
+            <div class="posts-grid">
                 {% if user_posts %}
-                    <div class="posts-grid">
-                        {% for post in user_posts %}
-                            <div class="post-card">
+                    {% for post in user_posts %}
+                        <div class="pin-card">
+                            <a href="{% url 'post_detail' post.pk %}" class="pin-link">
                                 {% if post.post_image %}
-                                    <img src="{{ post.post_image.url }}" alt="{{ post.post_title }}" class="post-image">
+                                    <img src="{{ post.post_image.url }}"
+                                         alt="{{ post.post_title }}"
+                                         class="pin-image">
                                 {% else %}
-                                    <div class="post-no-image">No image</div>
+                                    <div class="pin-no-image">Нет изображения</div>
                                 {% endif %}
 
-                                <div class="post-content">
-                                    <h3>{{ post.post_title }}</h3>
-                                    <p>{{ post.post_description|truncatewords:20 }}</p>
-                                    <a href="{{ post.get_absolute_url }}">Read more →</a>
+                                <div class="pin-overlay">
+                                    <div class="pin-actions">
+                                        {% if post.attachment %}
+                                            <a href="{{ post.post_file.url }}" class="download-btn" download>
+                                                Скачать
+                                            </a>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="pin-info-bottom">
+                                        <h3 class="pin-title">{{ post.post_title }}</h3>
+                                        <p class="pin-author">от {{ post.user.username }}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                    </div>
+                            </a>
+                        </div>
+                    {% endfor %}
                 {% else %}
-                    <p style="text-align: center; color: #888; font-style: italic;">No posts yet</p>
+                    <p class="no-posts">Пока нет постов</p>
                 {% endif %}
             </div>
         </div>

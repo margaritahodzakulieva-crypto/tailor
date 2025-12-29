@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login as user_login, logout as user_logout
 from django.http import HttpResponseRedirect
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.views.generic import View
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -83,3 +83,12 @@ class RedactionAccountView(View):
             form.save()
             return redirect('account')
         return render(request, self.template_name, {'form': form})
+
+class PostView(View):
+    template_name = 'post.html'
+    def get(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        return render(request, self.template_name, context={
+            'post': post,
+            'profile': request.user.profile if request.user.is_authenticated else None,
+        })

@@ -18,6 +18,10 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['post_image','post_title','post_description','post_file',]
+        widgets = {
+            'post_title': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Название поста...'}),
+            'post_description': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Описание поста...'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

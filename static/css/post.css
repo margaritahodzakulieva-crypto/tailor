@@ -2,6 +2,8 @@
 
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 html, body {
@@ -18,6 +20,7 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+/* === HEADER (тот же, что на главной) === */
 header {
     background: linear-gradient(#F3E8DF, #E8D1C5);
     padding: 15px 0;
@@ -102,8 +105,6 @@ header {
 
 .main-menu {
     list-style: none;
-    margin: 0;
-    padding: 0;
     display: flex;
     gap: 40px;
 }
@@ -133,152 +134,151 @@ header {
     transform: scale(1.1);
 }
 
-@media (max-width: 992px) {
-    .search-bar form {
-        width: 250px;
-    }
-    .nav-menu {
-        gap: 30px;
-    }
-    .main-menu {
-        gap: 25px;
-    }
-}
-
+/* Адаптивность хедера */
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        gap: 20px;
-        padding: 20px;
-    }
-
-    .search-bar form {
-        width: 100%;
-        max-width: 400px;
-    }
-
-    .nav-menu {
-        flex-direction: column;
-        gap: 20px;
-        width: 100%;
-    }
-
-    .main-menu {
-        justify-content: center;
-        gap: 30px;
-    }
+    .container { flex-direction: column; gap: 20px; padding: 20px; }
+    .search-bar form { width: 100%; max-width: 400px; }
+    .nav-menu { flex-direction: column; gap: 20px; width: 100%; }
+    .main-menu { justify-content: center; gap: 30px; }
 }
 
-
+/* === КОНТЕНТ ДЕТАЛЬНОЙ СТРАНИЦЫ === */
 main .container {
     padding: 40px 20px;
+    max-width: 1000px;
 }
 
-.posts-grid {
-    column-count: 4;
-    column-gap: 20px;
-    padding: 20px 0;
-}
-
-@media (max-width: 1200px) {
-    .posts-grid { column-count: 3; }
-}
-
-@media (max-width: 768px) {
-    .posts-grid { column-count: 2; }
-}
-
-@media (max-width: 480px) {
-    .posts-grid { column-count: 1; }
-}
-
-.pin-card {
-    break-inside: avoid;
-    margin-bottom: 20px;
+.pin-detail {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 40px;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(145, 31, 39, 0.1);
-    transition: all 0.3s ease;
-    position: relative;
+    box-shadow: 0 8px 30px rgba(145, 31, 39, 0.15);
 }
 
-.pin-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 30px rgba(145, 31, 39, 0.2);
-}
-
-.pin-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-}
-
-.pin-image {
+.pin-image img {
     width: 100%;
     height: auto;
     display: block;
     object-fit: cover;
+    border-radius: 20px 0 0 20px;
 }
 
-.pin-no-image {
+.no-image-placeholder {
     width: 100%;
-    height: 300px;
+    height: 600px;
     background: #E8D1C5;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #452829;
+    font-size: 24px;
     font-style: italic;
-    font-size: 18px;
+    border-radius: 20px 0 0 20px;
 }
 
-.pin-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.7));
-    opacity: 0;
-    transition: opacity 0.3s ease;
+.pin-info {
+    padding: 40px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 20px;
-    border-radius: 16px;
+    justify-content: flex-start;
 }
 
-.pin-card:hover .pin-overlay {
-    opacity: 1;
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
-.pin-actions {
-    align-self: flex-end;
+.user-info .user-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #452829;
+    margin-right: 20px;
+}
+
+.user-details .username {
+    font-size: 24px;
+    margin: 0 0 6px 0;
+}
+
+.user-details .followers {
+    font-size: 16px;
+    color: #666;
+    font-weight: 400;
+}
+
+.pin-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #452829;
+}
+
+.pin-description {
+    font-size: 18px;
+    line-height: 1.7;
+    margin-bottom: 30px;
+    color: #444;
+    white-space: pre-wrap;
+}
+
+.pin-date {
+    font-size: 16px;
+    color: #777;
+    margin-bottom: 40px;
+    font-weight: 400;
 }
 
 .download-btn {
+    align-self: flex-start;
     background: #911f27;
     color: white;
-    padding: 10px 20px;
+    padding: 14px 28px;
     border-radius: 30px;
     text-decoration: none;
     font-weight: 700;
-    font-size: 15px;
-    transition: background 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    font-size: 18px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(145, 31, 39, 0.2);
 }
 
 .download-btn:hover {
     background: #780000;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(145, 31, 39, 0.3);
 }
 
-.pin-info-bottom h3.pin-title {
-    color: white;
-    font-size: 18px;
-    margin: 0 0 6px 0;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+/* Адаптивность детальной страницы */
+@media (max-width: 992px) {
+    .pin-detail {
+        grid-template-columns: 1fr;
+    }
+    .pin-image img,
+    .no-image-placeholder {
+        border-radius: 20px 20px 0 0;
+    }
+    .pin-info {
+        padding: 30px;
+    }
+    .pin-title {
+        font-size: 28px;
+    }
 }
 
-.pin-info-bottom p.pin
-
+@media (max-width: 576px) {
+    .pin-info {
+        padding: 20px;
+    }
+    .user-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    .user-info .user-avatar {
+        margin-right: 0;
+    }
+}

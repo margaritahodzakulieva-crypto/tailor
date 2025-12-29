@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/post.css' %}">
+    <title>{{ post.post_title|default:"Пост" }}</title>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="/home">
+                    <img src="{% static 'images/logo05.png' %}" alt="Logo">
+                </a>
+            </div>
+
+            <div class="search-bar">
+                <form action="/search/" method="get">
+                    <input type="text" placeholder="Search" name="q">
+                    <button type="submit">
+                        <span class="search-icon"></span>
+                    </button>
+                </form>
+            </div>
+
+            <nav class="nav-menu">
+                <ul class="main-menu">
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/add">Add</a></li>
+                    <li><a href="/notice">Notice</a></li>
+                </ul>
+
+                <div class="account-item">
+                    {% if user.is_authenticated %}
+                        <a href="/account" class="account-link">
+                            {% if user.profile.image %}
+                                <img src="{{ user.profile.image.url }}" alt="Avatar" class="account-avatar">
+                            {% else %}
+                                <img src="{% static 'images/avatar.png' %}" alt="Default Avatar" class="account-avatar">
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main>
+       <div class="container">
+            <div class="pin-detail">
+                <div class="pin-image">
+                    {% if post.post_image %}
+                        <img src="{{ post.post_image.url }}" alt="{{ post.post_title }}">
+                    {% else %}
+                        <div class="no-image-placeholder">Нет изображения</div>
+                    {% endif %}
+                </div>
+
+                <div class="pin-info">
+                    <div class="user-info">
+                        <img class="user-avatar"
+                             src="{% if post.user.profile.image %}{{ post.user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}"
+                             alt="Аватар {{ post.user.username }}">
+                        <div class="user-details">
+                            <h3 class="username">{{ post.user.username }}</h3>
+                            <p class="followers">
+                                {% if post.user.profile.followers_count %}
+                                    {{ post.user.profile.followers_count }} подписчиков
+                                {% else %}
+                                    Подписчики
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <h1 class="pin-title">{{ post.post_title }}</h1>
+                    <p class="pin-description">{{ post.post_description|linebreaksbr }}</p>
+                    <p class="pin-date">Опубликовано: {{ post.date_posted|date:"d F Y" }}</p>
+
+                    {% if post.post_file %}
+                        <a href="{{ post.post_file.url }}" class="download-btn" download>
+                            Скачать дополнительный файл
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

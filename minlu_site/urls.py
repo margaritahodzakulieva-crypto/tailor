@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from home_page.views import logout_views, HomeView, LoginView, RegistrationView, AccountView, RedactionAccountView
+from home_page.views import logout_views, HomeView, LoginView, RegistrationView, AccountView, RedactionAccountView, PostView
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -12,6 +12,7 @@ urlpatterns = [
     path('home/',HomeView.as_view(), name='home'),
     path('account/', AccountView.as_view(), name='account'),
     path('redaction/', RedactionAccountView.as_view(), name='redaction'),
+    path('post/<int:pk>/', PostView.as_view(), name='post_detail'),
 ]
 
 if settings.DEBUG:

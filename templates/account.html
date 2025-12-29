@@ -33,61 +33,74 @@
             </nav>
         </div>
     </header>
+<main class="profile-page">
+    <div class="container">
+        <!-- Верхний блок: аватар слева + информация справа -->
+        <div class="profile-top">
+            <div class="profile-avatar-wrapper">
+                <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}"
+                     alt="Аватар {{ user.username }}"
+                     class="account-avatar-large">
+            </div>
 
-    <main class="profile-page">
-        <div class="profile-container">
-            <div class="profile-header">
-                <div class="account-avatar-block">
-                    {% if user.profile.image %}
-                        <img src="{{ user.profile.image.url }}" alt="Avatar" class="account-avatar">
+            <div class="profile-info-right">
+                <h1 class="profile-username">{{ user.username }}</h1>
+
+                <div class="profile-about">
+                    {% if user.profile.about %}
+                        {{ user.profile.about|linebreaks }}
                     {% else %}
-                        <img src="{% static 'images/avatar.png' %}" alt="Default Avatar" class="account-avatar">
+                        <p class="no-about">Ничего не указано о себе</p>
                     {% endif %}
                 </div>
 
-                <div class="about-section">
-                    <h1>{{ user.username }}</h1>
-                    <div class="about-text">
-                        {% if user.profile.about %}
-                            {{ user.profile.about|linebreaks }}
-                        {% else %}
-                            <p style="color: #888; font-style: italic;">Nothing stated about yourself</p>
-                        {% endif %}
-                    </div>
+                <div class="profile-stats">
+                    <span><strong>{{ user_posts.count }}</strong> постов</span>
+                    <!-- если будут подписчики/подписки — добавь сюда -->
                 </div>
 
-                <div class="button-block">
-                    <a href="/redaction" class="btn-edit">Edit profile</a>
+                <div class="profile-actions">
+                    <a href="/redaction" class="btn-edit">Редактировать профиль</a>
                 </div>
-            </div>
-
-
-            <div class="user-posts">
-                <h2>My posts</h2>
-
-                {% if user_posts %}
-                    <div class="posts-grid">
-                        {% for post in user_posts %}
-                            <div class="post-card">
-                                {% if post.post_image %}
-                                    <img src="{{ post.post_image.url }}" alt="{{ post.post_title }}" class="post-image">
-                                {% else %}
-                                    <div class="post-no-image">No image</div>
-                                {% endif %}
-
-                                <div class="post-content">
-                                    <h3>{{ post.post_title }}</h3>
-                                    <p>{{ post.post_description|truncatewords:20 }}</p>
-                                    <a href="{{ post.get_absolute_url }}">Read more →</a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p style="text-align: center; color: #888; font-style: italic;">No posts yet</p>
-                {% endif %}
             </div>
         </div>
-    </main>
+
+        <!-- Посты пользователя -->
+        <div class="user-posts-section">
+            <h2 class="posts-title">Мои посты</h2>
+
+            {% if user_posts %}
+                <div class="posts-grid">
+                    {% for post in user_posts %}
+                        <div class="pin-card">
+                            <a href="{% url 'post_detail' post.pk %}" class="pin-link">
+                                {% if post.post_image %}
+                                    <img src="{{ post.post_image.url }}"
+                                         alt="{{ post.post_title }}"
+                                         class="pin-image">
+                                {% else %}
+                                    <div class="pin-no-image">Нет изображения</div>
+                                {% endif %}
+
+                                <div class="pin-overlay">
+                                    <div class="pin-info-bottom">
+                                        <h3 class="pin-title">{{ post.post_title|truncatechars:50 }}</h3>
+                                        <p class="pin-date-small">{{ post.date_posted|date:"d M Y" }}</p>
+                                    </div>
+
+                                    {% if post.post_file %}
+                                        <span class="download-hint">📎</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-posts-message">Пока нет постов</p>
+            {% endif %}
+        </div>
+    </div>
+</main>
 </body>
 </html>
