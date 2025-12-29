@@ -29,7 +29,7 @@
             <nav class="nav-menu">
                 <ul class="main-menu">
                     <li><a href="/home">Home</a></li>
-                    <li><a href="/add">Add</a></li>
+                    <li><a href="/post/new">Add</a></li>
                     <li><a href="/notice">Notice</a></li>
                 </ul>
 
@@ -60,7 +60,7 @@
                                          alt="{{ post.post_title }}"
                                          class="pin-image">
                                 {% else %}
-                                    <div class="pin-no-image">Нет изображения</div>
+                                    <div class="pin-no-image">No images</div>
                                 {% endif %}
 
                                 <div class="pin-overlay">
@@ -81,7 +81,7 @@
                         </div>
                     {% endfor %}
                 {% else %}
-                    <p class="no-posts">Пока нет постов</p>
+                    <p class="no-posts">No posts</p>
                 {% endif %}
             </div>
         </div>

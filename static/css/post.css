@@ -20,7 +20,6 @@ body::-webkit-scrollbar {
     display: none;
 }
 
-/* === HEADER (тот же, что на главной) === */
 header {
     background: linear-gradient(#F3E8DF, #E8D1C5);
     padding: 15px 0;
@@ -134,7 +133,7 @@ header {
     transform: scale(1.1);
 }
 
-/* Адаптивность хедера */
+
 @media (max-width: 768px) {
     .container { flex-direction: column; gap: 20px; padding: 20px; }
     .search-bar form { width: 100%; max-width: 400px; }
@@ -142,7 +141,6 @@ header {
     .main-menu { justify-content: center; gap: 30px; }
 }
 
-/* === КОНТЕНТ ДЕТАЛЬНОЙ СТРАНИЦЫ === */
 main .container {
     padding: 40px 20px;
     max-width: 1000px;
@@ -252,7 +250,6 @@ main .container {
     box-shadow: 0 8px 25px rgba(145, 31, 39, 0.3);
 }
 
-/* Адаптивность детальной страницы */
 @media (max-width: 992px) {
     .pin-detail {
         grid-template-columns: 1fr;
@@ -281,4 +278,67 @@ main .container {
     .user-info .user-avatar {
         margin-right: 0;
     }
+}
+
+.user-avatar-link {
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.user-avatar-link:hover {
+    transform: scale(1.08);
+}
+
+.user-avatar-link:hover + .user-details .username-link {
+    color: #911f27; /* акцентный цвет при ховере */
+}
+
+.username-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.username-link:hover {
+    color: #911f27;
+}
+
+.user-avatar-link {
+    display: block;
+    width: 70px;
+    height: 70px;
+    transition: transform 0.3s ease;
+}
+
+.user-avatar-link:hover {
+    transform: scale(1.08);
+}
+
+.user-avatar-link:hover + .user-details .username-link {
+    color: #911f27;
+}
+
+.username-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.username-link:hover {
+    color: #911f27;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.user-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #452829;
 }

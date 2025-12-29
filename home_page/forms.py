@@ -19,15 +19,15 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['post_image','post_title','post_description','post_file',]
         widgets = {
-            'post_title': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Название поста...'}),
-            'post_description': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Описание поста...'}),
+            'post_title': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Post title...'}),
+            'post_description': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Description...'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['post_image'].label = "Post Image"
-        self.fields['post_title'].label = forms.Textarea(attrs={'rows': 2, 'placeholder': 'Post Title...'})
-        self.fields['post_description'].label = forms.Textarea(attrs={'rows': 5, 'placeholder': 'Post Description...'})
+        self.fields['post_title'].label = 'Post Title...'
+        self.fields['post_description'].label = 'Post Description...'
         self.fields['post_file'].label = "Post File"
 
 

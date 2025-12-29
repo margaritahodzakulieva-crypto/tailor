@@ -1,106 +1,120 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile {{ profile_user.username }}</title>
     <link rel="stylesheet" href="{% static 'css/account.css' %}">
-    <title>account</title>
 </head>
 <body>
     <header>
         <div class="container">
             <div class="logo">
-                <a href="/home">
+                <a href="{% url 'home' %}">
                     <img src="{% static 'images/logo05.png' %}" alt="Logo">
                 </a>
             </div>
 
             <div class="search-bar">
                 <form action="/search/" method="get">
-                    <input type="text" placeholder="Search" name="q">
-                    <button type="submit">
-                        <span class="search-icon"></span>
-                    </button>
+                    <input type="text" name="q" placeholder="Поиск">
+                    <button type="submit"><span class="search-icon"></span></button>
                 </form>
             </div>
 
             <nav class="nav-menu">
                 <ul class="main-menu">
-                    <li><a href="/home">Home</a></li>
-                    <li><a href="/add">Add</a></li>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="/post/new">Add</a></li>
                     <li><a href="/notice">Notice</a></li>
                 </ul>
+
+                <div class="account-item">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'account' %}" class="account-link">
+                            <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}"
+                                 alt="Аватар" class="account-avatar">
+                        </a>
+                    {% endif %}
+                </div>
             </nav>
         </div>
     </header>
-<main class="profile-page">
-    <div class="container">
-        <!-- Верхний блок: аватар слева + информация справа -->
-        <div class="profile-top">
-            <div class="profile-avatar-wrapper">
-                <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}"
-                     alt="Аватар {{ user.username }}"
-                     class="account-avatar-large">
-            </div>
 
-            <div class="profile-info-right">
-                <h1 class="profile-username">{{ user.username }}</h1>
+    <main class="profile-page">
+        <div class="container">
+            <div class="profile-top">
+                <div class="profile-avatar-wrapper">
+                    <img src="{% if profile_user.profile.image %}{{ profile_user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}"
+                         alt="Аватар {{ profile_user.username }}"
+                         class="account-avatar-large">
+                </div>
 
-                <div class="profile-about">
-                    {% if user.profile.about %}
-                        {{ user.profile.about|linebreaks }}
-                    {% else %}
-                        <p class="no-about">Ничего не указано о себе</p>
+                <div class="profile-info-right">
+                    <h1 class="profile-username">{{ profile_user.username }}</h1>
+
+                    <div class="profile-about">
+                        {% if profile_user.profile.about %}
+                            {{ profile_user.profile.about|linebreaks }}
+                        {% else %}
+                            <p class="no-about"Nothing stated about yourself</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="profile-stats">
+                        <span><strong>{{ user_posts.count }}</strong>posts</span>
+                    </div>
+
+                    {% if profile_user == user %}
+                        <div class="profile-actions">
+                            <a href="/redaction" class="btn-edit">Redaction profile</a>
+                        </div>
                     {% endif %}
                 </div>
+            </div>
 
-                <div class="profile-stats">
-                    <span><strong>{{ user_posts.count }}</strong> постов</span>
-                    <!-- если будут подписчики/подписки — добавь сюда -->
-                </div>
+            <div class="user-posts-section">
+                <h2 class="posts-title">
+                    {% if profile_user == user %}
+                        My posts
+                    {% else %}
+                        Posts {{ profile_user.username }}
+                    {% endif %}
+                </h2>
 
-                <div class="profile-actions">
-                    <a href="/redaction" class="btn-edit">Редактировать профиль</a>
-                </div>
+                {% if user_posts %}
+                    <div class="posts-grid">
+                        {% for post in user_posts %}
+                            <div class="pin-card">
+                                <a href="{% url 'post_detail' post.pk %}" class="pin-link">
+                                    {% if post.post_image %}
+                                        <img src="{{ post.post_image.url }}"
+                                             alt="{{ post.post_title }}"
+                                             class="pin-image">
+                                    {% else %}
+                                        <div class="pin-no-image">No images</div>
+                                    {% endif %}
+
+                                    <div class="pin-overlay">
+                                        <div class="pin-info-bottom">
+                                            <h3 class="pin-title">{{ post.post_title|truncatechars:50 }}</h3>
+                                            <p class="pin-date-small">{{ post.date_posted|date:"d M Y" }}</p>
+                                        </div>
+
+                                        {% if post.post_file %}
+                                            <span class="download-hint">Attach file</span>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="no-posts-message">No posts</p>
+                {% endif %}
             </div>
         </div>
-
-        <!-- Посты пользователя -->
-        <div class="user-posts-section">
-            <h2 class="posts-title">Мои посты</h2>
-
-            {% if user_posts %}
-                <div class="posts-grid">
-                    {% for post in user_posts %}
-                        <div class="pin-card">
-                            <a href="{% url 'post_detail' post.pk %}" class="pin-link">
-                                {% if post.post_image %}
-                                    <img src="{{ post.post_image.url }}"
-                                         alt="{{ post.post_title }}"
-                                         class="pin-image">
-                                {% else %}
-                                    <div class="pin-no-image">Нет изображения</div>
-                                {% endif %}
-
-                                <div class="pin-overlay">
-                                    <div class="pin-info-bottom">
-                                        <h3 class="pin-title">{{ post.post_title|truncatechars:50 }}</h3>
-                                        <p class="pin-date-small">{{ post.date_posted|date:"d M Y" }}</p>
-                                    </div>
-
-                                    {% if post.post_file %}
-                                        <span class="download-hint">📎</span>
-                                    {% endif %}
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="no-posts-message">Пока нет постов</p>
-            {% endif %}
-        </div>
-    </div>
-</main>
+    </main>
 </body>
 </html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New post</title>
+    <link rel="stylesheet" href="{% static 'css/add_post.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'home' %}">
+                    <img src="{% static 'images/logo05.png' %}" alt="Logo">
+                </a>
+            </div>
+
+            <div class="search-bar">
+                <form action="/search/" method="get">
+                    <input type="text" name="q" placeholder="Search...">
+                    <button type="submit"><span class="search-icon"></span></button>
+                </form>
+            </div>
+
+            <nav class="nav-menu">
+                <ul class="main-menu">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="/notice">Notice</a></li>
+                </ul>
+
+                <div class="account-item">
+                    {% if user.is_authenticated %}
+                        <a href="/account" class="account-link">
+                            <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}"
+                                 alt="Avatar" class="account-avatar">
+                        </a>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="add-post-main">
+        <div class="add-post-container">
+            <div class="add-post-card">
+                <h1>New post</h1>
+
+                <form method="POST" enctype="multipart/form-data" class="add-post-form">
+                    {% csrf_token %}
+
+                    <div class="image-upload-section">
+                        <div class="image-preview" id="image-preview">
+                            <img id="preview-img" src="" alt="Предпросмотр" style="display: none;">
+                            <div class="placeholder-text" id="placeholder-text">
+                                <p>Click to download image</p>
+                            </div>
+                        </div>
+                        <label class="image-upload-label" for="{{ form.post_image.id_for_label }}">
+                            Choose an image
+                        </label>
+                        {{ form.post_image }}
+                        {% if form.post_image.errors %}
+                            <span class="error">{{ form.post_image.errors }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="input-group">
+                        <label for="{{ form.post_title.id_for_label }}">{{ form.post_title.label }}</label>
+                        {{ form.post_title }}
+                        {% if form.post_title.errors %}
+                            <span class="error">{{ form.post_title.errors }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="input-group">
+                        <label for="{{ form.post_description.id_for_label }}">{{ form.post_description.label }}</label>
+                        {{ form.post_description }}
+                        {% if form.post_description.errors %}
+                            <span class="error">{{ form.post_description.errors }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="input-group">
+                        <label class="file-label" for="{{ form.post_file.id_for_label }}">
+                            Add file (PDF, ZIP, документ и т.д.)
+                        </label>
+                        {{ form.post_file }}
+                        {% if form.post_file.errors %}
+                            <span class="error">{{ form.post_file.errors }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary">Post</button>
+                        <a href="{% url 'home' %}" class="btn-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('{{ form.post_image.id_for_label }}').onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = document.getElementById('preview-img');
+                    img.src = event.target.result;
+                    img.style.display = 'block';
+                    document.getElementById('placeholder-text').style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>

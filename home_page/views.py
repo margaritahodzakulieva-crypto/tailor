@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login as user_login, logout as user_logout
+from django.contrib.auth import login as user_login, logout as user_logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -22,13 +22,11 @@ class HomeView(View):
             'user_posts': posts
         })
 
-
 class LoginView(View):
     template_name = 'login.html'
     def get(self, request):
         form = AuthenticationForm()
         return render(request, self.template_name, {'form': form})
-
 
     def post(self, request):
         form = AuthenticationForm(data=request.POST)
@@ -48,7 +46,6 @@ class RegistrationView(View):
         form = UserCreationForm()
         return render(request, self.template_name, {'form': form})
 
-
     def post(self, request):
         form = UserCreationForm(data=request.POST)
         if form.is_valid():
@@ -63,12 +60,17 @@ class RegistrationView(View):
 
 class AccountView(View):
     template_name = 'account.html'
-    def get(self, request):
-        profile = request.user.profile
-        posts = Post.objects.filter(user=request.user).order_by('-date_posted')
-        return render(request, self.template_name, context={
-            'profile': profile,
-            'user_posts': posts
+    def get(self, request, username=None):
+        if username:
+            profile_user = get_object_or_404(User, username=username)
+        else:
+            if not request.user.is_authenticated:
+                return redirect('login')
+            profile_user = request.user
+        user_posts = Post.objects.filter(user=profile_user).order_by('-date_posted')
+        return render(request, self.template_name, {
+            'profile_user': profile_user,
+            'user_posts': user_posts,
         })
 
 class RedactionAccountView(View):
@@ -92,3 +94,24 @@ class PostView(View):
             'post': post,
             'profile': request.user.profile if request.user.is_authenticated else None,
         })
+
+class AddPostView(View):
+    template_name = 'add_post.html'
+    def get(self, request):
+        form = PostForm()
+        return render(request, self.template_name, context={
+            'form': form,
+            'profile': request.user.profile if request.user.is_authenticated else None,
+        })
+    def post(self, request):
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            return redirect('/home')
+        return render(request, self.template_name, context={
+            'form': form,
+            'profile': request.user.profile if request.user.is_authenticated else None,
+        })
+
