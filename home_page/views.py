@@ -6,8 +6,11 @@ from django.views.generic import View
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib import messages
 from .forms import PostForm, UserProfileForm
-from .models import Post
+from .models import Post, Profile
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils import timezone
 
 
 def logout_views(request):
@@ -17,27 +20,54 @@ def logout_views(request):
 
 class HomeView(View):
     template_name = 'home.html'
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('/')
+        return super().dispatch(request, *args, **kwargs)
     def get(self, request):
         posts = Post.objects.all()
         return render(request, self.template_name, context={
             'user_posts': posts
         })
 
+
 class LoginView(View):
     template_name = 'login.html'
     def get(self, request):
         form = AuthenticationForm()
         return render(request, self.template_name, {'form': form})
-
     def post(self, request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             user_login(request, user)
+            login_time = timezone.now()
+            subject = 'Successful login'
+            message = f"""
+                Hi, {user.username}! 👋
+                We’re happy to see you again — you’ve successfully signed in to your account 😊
+                📅 Date and time of login: {login_time.strftime('%d.%m.%Y %H:%M:%S')}
+                If this wasn’t you, please change your password as soon as possible and contact us — we’ll be glad to help.
+                With care,
+                The Site Team 💙
+            """
+            try:
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False,
+                )
+                messages.success(request, 'Welcome! Notification sent by email')
+            except Exception as e:
+                messages.warning(request,
+                                 'Login was successful, but the email notification was not sent ')
+                print(f"Error sending email: {e}")
             messages.success(request, 'Welcome!')
             return redirect('/home')
         else:
-            messages.error(request, 'Invalid login or password')
+            messages.error(request, 'Неверный логин или пароль')
             return render(request, self.template_name, {'form': form})
 
 
@@ -46,7 +76,6 @@ class RegistrationView(View):
     def get(self, request):
         form = UserCreationForm()
         return render(request, self.template_name, {'form': form})
-
     def post(self, request):
         form = UserCreationForm(data=request.POST)
         if form.is_valid():
@@ -74,12 +103,20 @@ class AccountView(View):
             'user_posts': user_posts,
         })
 
+
 class RedactionAccountView(View):
     template_name = 'redaction_account.html'
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('/')
+        return super().dispatch(request, *args, **kwargs)
     def get(self, request):
-        form = UserProfileForm(instance=request.user.profile)
+        try:
+            profile = request.user.profile
+        except Profile.DoesNotExist:
+            profile = Profile.objects.create(user=request.user)
+        form = UserProfileForm(instance=profile)
         return render(request, self.template_name, {'form': form})
-
     def post(self, request):
         form = UserProfileForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
@@ -87,8 +124,13 @@ class RedactionAccountView(View):
             return redirect('account')
         return render(request, self.template_name, {'form': form})
 
+
 class PostView(View):
     template_name = 'post.html'
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('/')
+        return super().dispatch(request, *args, **kwargs)
     def get(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         return render(request, self.template_name, context={
@@ -96,8 +138,13 @@ class PostView(View):
             'profile': request.user.profile if request.user.is_authenticated else None,
         })
 
+
 class AddPostView(View):
     template_name = 'add_post.html'
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('/')
+        return super().dispatch(request, *args, **kwargs)
     def get(self, request):
         form = PostForm()
         return render(request, self.template_name, context={
@@ -116,17 +163,16 @@ class AddPostView(View):
             'profile': request.user.profile if request.user.is_authenticated else None,
         })
 
+
 def search_results(request):
     query = request.GET.get('q', '').strip()
     posts = []
-
     if query:
         posts = Post.objects.filter(
             Q(post_title__icontains=query) |
-            Q(post_description__icontains=query) |  # если есть описание
+            Q(post_description__icontains=query) |
             Q(user__username__icontains=query)
         ).distinct()
-
     context = {
        'query': query,
         'posts': posts,
